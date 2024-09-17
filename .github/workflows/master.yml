@@ -1,0 +1,32 @@
+name: Automated-Commit
+
+on:
+  schedule:
+    # Run the workflow every 12 hours
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+    # Allows manual trigger of the workflow
+
+jobs:
+  update_commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Git configuration
+        run: |
+          git config --global user.email "fatihdek@gmail.com"
+          git config --global user.name "Mutu-s"
+
+      - name: Write current date to file
+        run: |
+          date "+%Y-%m-%d %H:%M:%S" > TIMESTAMP.txt
+
+      - name: Commit changes
+        run: |
+          git add TIMESTAMP.txt
+          git commit -m "Update: $(date)"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
